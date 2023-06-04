@@ -5,6 +5,8 @@ import com.example.demo.Repositories.DummyEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,13 +16,17 @@ public class DummyEntityService {
     DummyEntityRepository repository;
 
     public DummyEntity findEntityById(Long id) {
+
         Optional<DummyEntity> entity = repository.findById(id);
-        return entity.isPresent() ? entity.get() : null;
+
+        return entity.orElse(new DummyEntity());
     }
 
-    public List<DummyEntity> findEntityByVoivodeship(String voivodeship) {
-        Optional<List<DummyEntity>> foundEntity = repository.findByVoivodeship(voivodeship);
-        return foundEntity.isPresent() ? foundEntity.get() : null;
+    public List<DummyEntity> findEntityByVoivodeshipAndDate(String voivodeship, Date startDate, Date endDate) {
+
+        Optional<List<DummyEntity>> foundEntity = repository.findAllByVoivodeshipAndTimestampBetween(voivodeship, startDate, endDate);
+
+        return foundEntity.orElse(Collections.emptyList());
     }
 
     public void saveEntity(DummyEntity entity) {
