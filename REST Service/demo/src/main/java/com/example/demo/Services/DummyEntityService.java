@@ -3,6 +3,10 @@ package com.example.demo.Services;
 import com.example.demo.DummyObject.DummyEntity;
 import com.example.demo.Repositories.DummyEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -15,18 +19,25 @@ public class DummyEntityService {
     @Autowired
     DummyEntityRepository repository;
 
+    public void deleteEntity(Long id) {
+
+        repository.deleteById(id);
+    }
+
     public DummyEntity findEntityById(Long id) {
 
         Optional<DummyEntity> entity = repository.findById(id);
 
-        return entity.orElse(new DummyEntity());
+        return entity.orElseGet(DummyEntity::new);
     }
 
-    public List<DummyEntity> findEntityByVoivodeshipAndDate(String voivodeship, Date startDate, Date endDate) {
+    public Page<DummyEntity> searchEntities(Specification<DummyEntity> specification, Pageable pageable) {
 
-        Optional<List<DummyEntity>> foundEntity = repository.findAllByVoivodeshipAndTimestampBetween(voivodeship, startDate, endDate);
+        return repository.findAll(specification, pageable);
+    }
 
-        return foundEntity.orElse(Collections.emptyList());
+    public List<DummyEntity> searchEntities() {
+        return repository.findAll();
     }
 
     public void saveEntity(DummyEntity entity) {

@@ -2,7 +2,12 @@ package com.example.demo.Controller;
 
 import com.example.demo.DummyObject.DummyEntity;
 import com.example.demo.Services.DummyEntityService;
+import com.example.demo.Specification.EntitySpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -19,23 +25,43 @@ public class Controller {
     @Autowired
     private DummyEntityService service;
 
+
     @PostMapping(value = "/postEstimation", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DummyEntity> postEntity(@RequestBody DummyEntity entity) {
 
-        DummyEntity newEntity = entity;
-
         service.saveEntity(entity);
 
-        return new ResponseEntity<>(newEntity, HttpStatus.CREATED);
+        return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/retrieveEstimation", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<DummyEntity>> getEstimation(@RequestParam("voivodeship") String voivodeship, @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
-                                                         @RequestParam("endDate")  @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
+    public ResponseEntity<Page<DummyEntity>> getEstimation(@RequestParam(value = "voivodeship", required = false) String voivodeship,
+                                                           @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+                                                           @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+                                                           @RequestParam(value = "population", required = false) Integer population,
+                                                           @RequestParam(value = "estimatedPopulation", required = false) Integer populationInYear,
+                                                           @PageableDefault(size = 15) Pageable pageable) {
 
-        List<DummyEntity> entity = service.findEntityByVoivodeshipAndDate(voivodeship, startDate, endDate);
+        Specification<DummyEntity> specification = Specification.where(null);
 
-        return new ResponseEntity<>(entity, HttpStatus.OK);
+        if (Optional.ofNullable(population).isPresent()) {
+            specification = specification.and(EntitySpecification.withPopulation(population));
+        }
+        if (Optional.ofNullable(populationInYear).isPresent()) {
+            specification = specification.and(EntitySpecification.withPopulationInYear(populationInYear));
+        }
+
+        if (Optional.ofNullable(voivodeship).isPresent()) {
+            specification = specification.and(EntitySpecification.withVoivodeship(voivodeship));
+        }
+
+        if (Optional.ofNullable(startDate).isPresent() && Optional.ofNullable(endDate).isPresent()) {
+            specification = specification.and(EntitySpecification.withDateRange(startDate, endDate));
+        }
+
+        Page<DummyEntity> entities = service.searchEntities(specification, pageable);
+
+        return ResponseEntity.ok(entities);
     }
 
     @PutMapping(value = "/entities/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -49,6 +75,14 @@ public class Controller {
         service.saveEntity(editedEntity);
 
         return new ResponseEntity<>(editedEntity, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/entities/{id}")
+    public String deleteEntity(@PathVariable Long id) {
+
+        service.deleteEntity(id);
+
+        return "Entity has been deleted.";
     }
 
 }
