@@ -1,6 +1,9 @@
 package com.example.demo.DummyObject;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+
+import java.util.Date;
 
 @Entity
 public class DummyEntity {
@@ -10,12 +13,16 @@ public class DummyEntity {
 
     @Column(name = "voivodeship")
     private String voivodeship;
-
-    @Column(name = "currentPopulation")
+    @Column(name = "current_population")
     private int currentPopulation;
 
-    @Column(name = "estimatedPopulation")
+    @Column(name = "estimated_population")
     private int estimatedPopulationInYear;
+
+    @Column(name = "timestamp")
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date timestamp;
 
     public int getId() {
         return id;
@@ -46,6 +53,7 @@ public class DummyEntity {
     }
 
     public void setEstimatedPopulationInYear(int estimatedPopulationInYear) {
+
         this.estimatedPopulationInYear = estimatedPopulationInYear;
     }
 }
