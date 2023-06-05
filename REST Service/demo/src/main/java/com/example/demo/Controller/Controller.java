@@ -1,88 +1,107 @@
-package com.example.demo.Controller;
+    package com.example.demo.Controller;
 
-import com.example.demo.DummyObject.DummyEntity;
-import com.example.demo.Services.DummyEntityService;
-import com.example.demo.Specification.EntitySpecification;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+    import com.example.demo.DummyObject.DummyEntity;
+    import com.example.demo.Mapper.DummyEntityMapper;
+    import com.example.demo.Services.DummyEntityService;
+    import com.example.demo.Specification.SpecificationBuilder;
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.data.domain.Page;
+    import org.springframework.data.domain.Pageable;
+    import org.springframework.data.web.PageableDefault;
+    import org.springframework.format.annotation.DateTimeFormat;
+    import org.springframework.http.HttpStatus;
+    import org.springframework.http.MediaType;
+    import org.springframework.http.ResponseEntity;
+    import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+    import java.util.Date;
 
-@RestController
-@RequestMapping("/api")
-public class Controller {
+    /**
+     * Controller for handling DummyEntity requests.
+     *
+     * @author Thorvas
+     */
+    @RestController
+    @RequestMapping("/api")
+    public class Controller {
 
-    @Autowired
-    private DummyEntityService service;
+        @Autowired
+        private DummyEntityService service;
 
+        /**
+         * Receives data from logic part of application and saves received data to database
+         *
+         * @param entity An entity sent to endpoint from data-analysis module which is saved to database
+         * @return The ResponseEntity object which contains saved entity
+         */
+        @PostMapping(value = "/postEstimation", consumes = MediaType.APPLICATION_JSON_VALUE)
+        public ResponseEntity<DummyEntity> postEntity(@RequestBody DummyEntity entity) {
 
-    @PostMapping(value = "/postEstimation", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DummyEntity> postEntity(@RequestBody DummyEntity entity) {
+            service.saveEntity(entity);
 
-        service.saveEntity(entity);
-
-        return new ResponseEntity<>(entity, HttpStatus.CREATED);
-    }
-
-    @GetMapping(value = "/retrieveEstimation", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<DummyEntity>> getEstimation(@RequestParam(value = "voivodeship", required = false) String voivodeship,
-                                                           @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
-                                                           @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
-                                                           @RequestParam(value = "population", required = false) Integer population,
-                                                           @RequestParam(value = "estimatedPopulation", required = false) Integer populationInYear,
-                                                           @PageableDefault(size = 15) Pageable pageable) {
-
-        Specification<DummyEntity> specification = Specification.where(null);
-
-        if (Optional.ofNullable(population).isPresent()) {
-            specification = specification.and(EntitySpecification.withPopulation(population));
-        }
-        if (Optional.ofNullable(populationInYear).isPresent()) {
-            specification = specification.and(EntitySpecification.withPopulationInYear(populationInYear));
+            return new ResponseEntity<>(entity, HttpStatus.CREATED);
         }
 
-        if (Optional.ofNullable(voivodeship).isPresent()) {
-            specification = specification.and(EntitySpecification.withVoivodeship(voivodeship));
+        /**
+         * Retrieves estimation data from database based on parameters provided for filtering.
+         *
+         * @param voivodeship      The voivodeship value (as String)
+         * @param startDate        The start date value in range (in format yyyy-MM-dd)
+         * @param endDate          The end date value in range (in format yyyy-MM-dd)
+         * @param population       The population value
+         * @param populationInYear The estimated value for population in year
+         * @param pageable         The Pageable object for pagination
+         * @return The ResponseEntity containing result of search
+         */
+        @GetMapping(value = "/retrieveEstimation", produces = MediaType.APPLICATION_JSON_VALUE)
+        public ResponseEntity<Page<DummyEntity>> getEstimation(@RequestParam(value = "voivodeship", required = false) String voivodeship,
+                                                               @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+                                                               @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+                                                               @RequestParam(value = "population", required = false) Integer population,
+                                                               @RequestParam(value = "estimatedPopulation", required = false) Integer populationInYear,
+                                                               @PageableDefault(size = 15) Pageable pageable) {
+
+            SpecificationBuilder specificationBuilder = new SpecificationBuilder();
+
+            specificationBuilder.withPopulation(population)
+                    .withDateRange(startDate, endDate)
+                    .withVoivodeship(voivodeship)
+                    .withPopulationInYear(populationInYear);
+
+            Page<DummyEntity> entities = service.searchEntities(specificationBuilder.buildSpecification(), pageable);
+
+            return ResponseEntity.ok(entities);
         }
 
-        if (Optional.ofNullable(startDate).isPresent() && Optional.ofNullable(endDate).isPresent()) {
-            specification = specification.and(EntitySpecification.withDateRange(startDate, endDate));
+        /**
+         * Updates an entity in database
+         *
+         * @param id     An ID value of updated object
+         * @param entity New object to substitute an updated objec
+         * @return The ResponseEntity object containing updated object
+         */
+        @PatchMapping(value = "/entities/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+        public ResponseEntity<DummyEntity> updateEntity(@PathVariable Long id, @RequestBody DummyEntity entity) {
+
+            DummyEntity editedEntity = service.findEntityById(id);
+
+            DummyEntityMapper.mapEntity(entity, editedEntity);
+            service.saveEntity(editedEntity);
+
+            return new ResponseEntity<>(editedEntity, HttpStatus.OK);
         }
 
-        Page<DummyEntity> entities = service.searchEntities(specification, pageable);
+        /**
+         * Deletes an entity from database
+         *
+         * @param id An ID value of deleted object
+         * @return The String with deletion message
+         */
+        @DeleteMapping(value = "/entities/{id}")
+        public String deleteEntity(@PathVariable Long id) {
 
-        return ResponseEntity.ok(entities);
+            service.deleteEntity(id);
+
+            return "Entity has been deleted.";
+        }
     }
-
-    @PutMapping(value = "/entities/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DummyEntity> updateEntity(@PathVariable Long id, @RequestBody DummyEntity entity) {
-
-        DummyEntity editedEntity = service.findEntityById(id);
-
-        editedEntity.setCurrentPopulation(entity.getCurrentPopulation());
-        editedEntity.setVoivodeship(entity.getVoivodeship());
-        editedEntity.setEstimatedPopulationInYear(entity.getEstimatedPopulationInYear());
-        service.saveEntity(editedEntity);
-
-        return new ResponseEntity<>(editedEntity, HttpStatus.OK);
-    }
-
-    @DeleteMapping(value = "/entities/{id}")
-    public String deleteEntity(@PathVariable Long id) {
-
-        service.deleteEntity(id);
-
-        return "Entity has been deleted.";
-    }
-
-}
