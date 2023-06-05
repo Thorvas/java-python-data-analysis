@@ -5,6 +5,11 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 
+/**
+ * An entity containing analyzed data
+ *
+ * @author Thorvas
+ */
 @Entity
 public class DummyEntity {
     @Id
