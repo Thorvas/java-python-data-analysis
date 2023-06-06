@@ -1,14 +1,8 @@
 from functions import *
+from powiat import Powiat
 
-class Voivodeship:
-    def __init__(self, name, population):
-        self.name = name
-        self.population = population
-        
+powiats = []
 
-voivodeships = []
-
-for i in range(16):
-    voivodeship = Voivodeship(get_voivodeship_name(i), get_voivodeship_population(i))
-    voivodeships.append(voivodeship)
-        
+for i in range(382):
+    powiat = Powiat(get_powiat_name(i), get_powiat_population(i))
+    powiats.append(powiat)
