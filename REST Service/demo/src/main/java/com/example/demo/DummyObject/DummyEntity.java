@@ -17,18 +17,50 @@ public class DummyEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name = "voivodeship")
-    private String voivodeship;
-    @Column(name = "current_population")
-    private int currentPopulation;
+    @Column(name = "name")
+    private String name;
+    @Column(name = "population")
+    private int population;
 
-    @Column(name = "estimated_population")
-    private int estimatedPopulationInYear;
+    @Column(name = "estimation")
+    private int estimation;
 
     @Column(name = "timestamp")
     @Temporal(TemporalType.DATE)
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date timestamp;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getPopulation() {
+        return population;
+    }
+
+    public void setPopulation(int population) {
+        this.population = population;
+    }
+
+    public int getEstimation() {
+        return estimation;
+    }
+
+    public void setEstimation(int estimation) {
+        this.estimation = estimation;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
 
     public int getId() {
         return id;
@@ -38,28 +70,5 @@ public class DummyEntity {
         this.id = id;
     }
 
-    public String getVoivodeship() {
-        return voivodeship;
-    }
 
-    public void setVoivodeship(String voivodeship) {
-        this.voivodeship = voivodeship;
-    }
-
-    public int getCurrentPopulation() {
-        return currentPopulation;
-    }
-
-    public void setCurrentPopulation(int currentPopulation) {
-        this.currentPopulation = currentPopulation;
-    }
-
-    public int getEstimatedPopulationInYear() {
-        return estimatedPopulationInYear;
-    }
-
-    public void setEstimatedPopulationInYear(int estimatedPopulationInYear) {
-
-        this.estimatedPopulationInYear = estimatedPopulationInYear;
-    }
 }

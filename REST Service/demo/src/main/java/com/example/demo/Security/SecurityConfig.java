@@ -1,4 +1,4 @@
-/*package com.example.demo.Security;
+package com.example.demo.Security;
 
 import com.example.demo.Services.UserDetailsCustomImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,4 +42,3 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**");
     }
 }
-*/
