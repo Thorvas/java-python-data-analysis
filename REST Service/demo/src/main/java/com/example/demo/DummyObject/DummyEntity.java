@@ -21,16 +21,16 @@ public class DummyEntity {
 
     }
 
-    /*
+
     public DummyEntity(String json) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         DummyEntity dummyEntity = objectMapper.readValue(json, DummyEntity.class);
         this.name = dummyEntity.name;
         this.population = dummyEntity.population;
         this.estimation = dummyEntity.estimation;
-        this.last_updated = dummyEntity.last_updated;
+        this.lastUpdated = dummyEntity.lastUpdated;
     }
-*/
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
