@@ -46,8 +46,8 @@ def get_total_powiats():
     return len(response)
 
 def get_current_date():
-    '''Returns current date in format YYYY-mm-dd HH:MM'''
+    '''Returns current date in format YYYY-mm-dd'''
     date = datetime.datetime.now()
-    date = date.strftime('%Y-%m-%d %H:%M')
+    date = date.strftime('%Y-%m-%d')
 
     return date
