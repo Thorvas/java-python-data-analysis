@@ -71,4 +71,8 @@ public class DummyEntityService {
     public void saveEntity(DummyEntity entity) {
         repository.save(entity);
     }
+
+    public Optional<DummyEntity> searchEntityByName(String name) {
+        return repository.findByName(name);
+    }
 }

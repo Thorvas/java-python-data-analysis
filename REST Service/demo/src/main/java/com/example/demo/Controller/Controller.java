@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * Controller for handling DummyEntity requests.
@@ -37,7 +38,16 @@ public class Controller {
     @PostMapping(value = "/postEstimation", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DummyEntity> postEntity(@RequestBody DummyEntity entity) {
 
-        service.saveEntity(entity);
+        Optional<DummyEntity> foundEntity = service.searchEntityByName(entity.getName());
+        if (foundEntity.isPresent()) {
+            DummyEntity presentEntity = foundEntity.get();
+            DummyEntityMapper.mapEntity(entity, presentEntity);
+            service.saveEntity(presentEntity);
+
+        } else {
+
+            service.saveEntity(entity);
+        }
 
         return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }

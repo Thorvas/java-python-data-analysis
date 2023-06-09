@@ -1,6 +1,7 @@
 package com.example.demo.DummyObject;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 
@@ -45,6 +46,7 @@ public class DummyEntity {
     @Column(name = "last_updated")
     @Temporal(TemporalType.DATE)
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonProperty("last_updated")
     private Date lastUpdated;
 
     public String getName() {
@@ -86,6 +88,4 @@ public class DummyEntity {
     public void setId(int id) {
         this.id = id;
     }
-
-
 }
