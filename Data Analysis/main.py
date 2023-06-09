@@ -1,6 +1,7 @@
 from functions import *
 from powiat import Powiat
 import requests
+import json
 
 powiat = []
 
@@ -14,6 +15,7 @@ for i in range(get_total_powiats()):
         powiat.append(item)
 
 for i in range(get_total_powiats()):
-    requests.post('localhost:8080/api/postEstimation', json=powiat[i].asdict())
-
-
+    payload = powiat[i].asdict()
+    payload = json.dumps(payload)
+    print(f'Posting {get_powiat_name(i)}')
+    posted_powiat = requests.post('http://localhost:8080/api/postEstimation', data=payload)
