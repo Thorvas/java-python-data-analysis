@@ -16,6 +16,6 @@ for i in range(get_total_powiats()):
 
 for i in range(get_total_powiats()):
     payload = powiat[i].asdict()
-    payload = json.dumps(payload)
+    payload = json.dumps(payload, ensure_ascii=False)
     print(f'Posting {get_powiat_name(i)}')
-    posted_powiat = requests.post('http://localhost:8080/api/postEstimation', data=payload)
+    posted_powiat = requests.post('http://localhost:8080/api/postEstimation', json=payload)
