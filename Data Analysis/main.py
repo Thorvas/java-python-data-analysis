@@ -19,5 +19,5 @@ for i in range(len(powiat)):
     payload = powiat[i].asdict()
     payload = json.dumps(payload, ensure_ascii=False)
     print(f'Posting powiat number {i}\nPosting {powiat[i].name}')
-    posted_powiat = requests.post('https://reqres.in/api/users', json=payload)
+    posted_powiat = requests.post('http://localhost:8080/api/postEstimation', json=payload)
     print(f'Status code: {posted_powiat.status_code}')
