@@ -11,6 +11,7 @@ import java.util.Date;
  * @author Thorvas
  */
 @Entity
+@Table(name="DUMMY_ENTITY")
 public class DummyEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

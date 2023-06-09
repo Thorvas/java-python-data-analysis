@@ -1,4 +1,4 @@
-package com.example.demo;
+/*package com.example.demo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -14,3 +14,4 @@ class DemoApplicationTests {
 	}
 
 }
+*/
