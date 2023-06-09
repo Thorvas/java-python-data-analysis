@@ -21,7 +21,7 @@ public class SpecificationBuilder {
 
     public SpecificationBuilder withVoivodeship(String voivodeship) {
 
-        if (Optional.ofNullable(specification).isPresent()) {
+        if (Optional.ofNullable(voivodeship).isPresent()) {
 
             this.specification = specification.and(EntitySpecification.withVoivodeship(voivodeship));
         }
