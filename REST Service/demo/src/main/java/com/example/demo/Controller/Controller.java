@@ -67,7 +67,6 @@ public class Controller {
                 .withDateRange(startDate, endDate)
                 .withVoivodeship(voivodeship)
                 .withPopulationInYear(populationInYear);
-                .withPopulationInYear(populationInYear);
 
         Page<DummyEntity> entities = service.searchEntities(specificationBuilder.buildSpecification(), pageable);
 

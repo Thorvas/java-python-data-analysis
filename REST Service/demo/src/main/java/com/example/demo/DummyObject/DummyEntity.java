@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * An entity containing analyzed data
@@ -19,12 +20,11 @@ public class DummyEntity {
 
     @Column(name = "name")
     private String name;
-    @Column(name = "population")
-    private int population;
+    @ElementCollection
+    private Map<String, Integer> population;
 
     @Column(name = "estimation")
     private int estimation;
-
     @Column(name = "timestamp")
     @Temporal(TemporalType.DATE)
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -38,11 +38,11 @@ public class DummyEntity {
         this.name = name;
     }
 
-    public int getPopulation() {
+    public Map<String, Integer> getPopulation() {
         return population;
     }
 
-    public void setPopulation(int population) {
+    public void setPopulation(Map<String, Integer> population) {
         this.population = population;
     }
 
