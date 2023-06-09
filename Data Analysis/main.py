@@ -14,8 +14,8 @@ for i in range(get_total_powiats()):
             item = Powiat('Powiat m. Wałbrzych', get_powiat_population(i), 0, get_current_date)
         powiat.append(item)
 
-for i in range(get_total_powiats()):
+for i in range(len(powiat)):
     payload = powiat[i].asdict()
     payload = json.dumps(payload, ensure_ascii=False)
-    print(f'Posting {get_powiat_name(i)}')
+    print(f'Posting powiat number {i}\nPosting {get_powiat_name(i)}')
     posted_powiat = requests.post('http://localhost:8080/api/postEstimation', json=payload)
