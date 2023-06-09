@@ -21,6 +21,7 @@ public class DummyEntity {
 
     }
 
+    /*
     public DummyEntity(String json) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         DummyEntity dummyEntity = objectMapper.readValue(json, DummyEntity.class);
@@ -29,7 +30,7 @@ public class DummyEntity {
         this.estimation = dummyEntity.estimation;
         this.last_updated = dummyEntity.last_updated;
     }
-
+*/
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -44,7 +45,7 @@ public class DummyEntity {
     @Column(name = "last_updated")
     @Temporal(TemporalType.DATE)
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date last_updated;
+    private Date lastUpdated;
 
     public String getName() {
         return name;
@@ -70,12 +71,12 @@ public class DummyEntity {
         this.estimation = estimation;
     }
 
-    public Date getTimestamp() {
-        return last_updated;
+    public Date getLastUpdated() {
+        return lastUpdated;
     }
 
-    public void setTimestamp(Date timestamp) {
-        this.last_updated = timestamp;
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 
     public int getId() {
