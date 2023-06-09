@@ -35,9 +35,9 @@ public class Controller {
      * @return The ResponseEntity object which contains saved entity
      */
     @PostMapping(value = "/postEstimation", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> postEntity(@RequestBody Object entity) {
+    public ResponseEntity<DummyEntity> postEntity(@RequestBody DummyEntity entity) {
 
-        System.out.println(entity);
+        service.saveEntity(entity);
 
         return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }

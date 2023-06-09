@@ -11,7 +11,7 @@ import java.util.Date;
 public class EntitySpecification {
     public static Specification<DummyEntity> withPopulation(Integer population) {
 
-        return ((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("currentPopulation"), population));
+        return ((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("estimation"), population));
     }
 
     public static Specification<DummyEntity> withPopulationInYear(Integer populationInYear) {

@@ -1,8 +1,10 @@
 package com.example.demo.DummyObject;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
@@ -14,6 +16,20 @@ import java.util.Map;
 @Entity
 @Table(name="DUMMY_ENTITY")
 public class DummyEntity {
+
+    public DummyEntity() {
+
+    }
+
+    public DummyEntity(String json) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        DummyEntity dummyEntity = objectMapper.readValue(json, DummyEntity.class);
+        this.name = dummyEntity.name;
+        this.population = dummyEntity.population;
+        this.estimation = dummyEntity.estimation;
+        this.last_updated = dummyEntity.last_updated;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -25,10 +41,10 @@ public class DummyEntity {
 
     @Column(name = "estimation")
     private int estimation;
-    @Column(name = "timestamp")
+    @Column(name = "last_updated")
     @Temporal(TemporalType.DATE)
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date timestamp;
+    private Date last_updated;
 
     public String getName() {
         return name;
@@ -55,11 +71,11 @@ public class DummyEntity {
     }
 
     public Date getTimestamp() {
-        return timestamp;
+        return last_updated;
     }
 
     public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
+        this.last_updated = timestamp;
     }
 
     public int getId() {
