@@ -72,7 +72,7 @@ public class DummyEntityService {
         repository.save(entity);
     }
 
-    public Optional<DummyEntity> searchEntityByName(String name) {
-        return repository.findByName(name);
+    public Optional<DummyEntity> searchEntityById(Long id) {
+        return repository.findById(id);
     }
 }

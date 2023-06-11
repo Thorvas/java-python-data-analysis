@@ -38,7 +38,10 @@ public class Controller {
     @PostMapping(value = "/postEstimation", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DummyEntity> postEntity(@RequestBody DummyEntity entity) {
 
-        Optional<DummyEntity> foundEntity = service.searchEntityByName(entity.getName());
+        System.out.println(entity.getId());
+
+        Optional<DummyEntity> foundEntity = service.searchEntityById(entity.getId());
+        System.out.println(entity.getId());
         if (foundEntity.isPresent()) {
             DummyEntity presentEntity = foundEntity.get();
             DummyEntityMapper.mapEntity(entity, presentEntity);
