@@ -18,9 +18,17 @@ for i in range(get_total_powiats()):
             id += 1
         powiat.append(item)
 
+# Predicting population value for next year for each powiat
+for item in powiat:
+    item.prediction = item.predict_population()
+
 for i in range(len(powiat)):
     payload = powiat[i].asdict()
     payload = json.dumps(payload, ensure_ascii=False) #ensure_ascii=False makes it possible for json to contain Polish characters
     print(f'Posting powiat number {i + 1}\nPosting {powiat[i].name}')
     posted_powiat = requests.post('http://localhost:8080/api/postEstimation', json=payload)
     print(f'Status code: {posted_powiat.status_code}')
+
+# Testing the results:
+# for i in range(len(powiat)):
+#     print(f'Name: {powiat[i].name}, {powiat[i].population["2022"]}->{powiat[i].prediction}')
