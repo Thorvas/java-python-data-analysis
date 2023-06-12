@@ -17,7 +17,7 @@ public class DummyEntityMapper {
      */
     public static void mapEntity(DummyEntity sourceEntity, DummyEntity targetEntity) {
 
-        targetEntity.setEstimation(sourceEntity.getEstimation());
+        targetEntity.setprediction(sourceEntity.getprediction());
         targetEntity.setLastUpdated(sourceEntity.getLastUpdated());
         targetEntity.setPopulation(sourceEntity.getPopulation());
         targetEntity.setVoivodeship(sourceEntity.getVoivodeship());

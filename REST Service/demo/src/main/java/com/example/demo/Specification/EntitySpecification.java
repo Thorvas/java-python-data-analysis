@@ -11,12 +11,12 @@ import java.util.Date;
 public class EntitySpecification {
     public static Specification<DummyEntity> withPopulation(Integer population) {
 
-        return ((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("estimation"), population));
+        return ((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("prediction"), population));
     }
 
     public static Specification<DummyEntity> withPopulationInYear(Integer populationInYear) {
 
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("estimation"), populationInYear);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("prediction"), populationInYear);
     }
 
     public static Specification<DummyEntity> withVoivodeship(String voivodeship) {

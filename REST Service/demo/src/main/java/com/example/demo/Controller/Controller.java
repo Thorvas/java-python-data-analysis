@@ -41,7 +41,6 @@ public class Controller {
         System.out.println(entity.getId());
 
         Optional<DummyEntity> foundEntity = service.searchEntityById(entity.getId());
-        System.out.println(entity.getId());
         if (foundEntity.isPresent()) {
             DummyEntity presentEntity = foundEntity.get();
             DummyEntityMapper.mapEntity(entity, presentEntity);

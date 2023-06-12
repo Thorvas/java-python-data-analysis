@@ -28,7 +28,7 @@ public class DummyEntity {
         this.id = dummyEntity.getId();
         this.name = dummyEntity.name;
         this.population = dummyEntity.population;
-        this.estimation = dummyEntity.estimation;
+        this.prediction = dummyEntity.prediction;
         this.lastUpdated = dummyEntity.lastUpdated;
         this.voivodeship = dummyEntity.getVoivodeship();
     }
@@ -46,8 +46,8 @@ public class DummyEntity {
     @ElementCollection
     private Map<String, Integer> population;
 
-    @Column(name = "estimation")
-    private int estimation;
+    @Column(name = "prediction")
+    private int prediction;
     @Column(name = "last_updated")
     @Temporal(TemporalType.DATE)
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -78,12 +78,12 @@ public class DummyEntity {
         this.population = population;
     }
 
-    public int getEstimation() {
-        return estimation;
+    public int getprediction() {
+        return prediction;
     }
 
-    public void setEstimation(int estimation) {
-        this.estimation = estimation;
+    public void setprediction(int prediction) {
+        this.prediction = prediction;
     }
 
     public Date getLastUpdated() {
