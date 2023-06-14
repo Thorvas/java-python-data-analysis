@@ -1,7 +1,9 @@
 package com.example.demo.DummyObject;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "authority")
 public class Authority {
@@ -11,30 +13,6 @@ public class Authority {
 
     @Column(name = "name")
     private String authority;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getAuthority() {
-        return authority;
-    }
-
-    public void setAuthority(String authority) {
-        this.authority = authority;
-    }
-
-    public CustomUser getUser() {
-        return user;
-    }
-
-    public void setUser(CustomUser user) {
-        this.user = user;
-    }
 
     @ManyToOne
     @JoinColumn(name = "custom_user_id")

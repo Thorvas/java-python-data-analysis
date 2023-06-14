@@ -3,7 +3,6 @@ package com.example.demo.Specification;
 import com.example.demo.DummyObject.DummyEntity;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.util.Date;
 import java.util.Optional;
 
 
@@ -44,16 +43,6 @@ public class SpecificationBuilder {
         if (Optional.ofNullable(populationInYear).isPresent()) {
 
             this.specification = specification.and(EntitySpecification.withPopulationInYear(populationInYear));
-        }
-
-        return this;
-    }
-
-    public SpecificationBuilder withDateRange(Date startDate, Date endDate) {
-
-        if (Optional.ofNullable(startDate).isPresent() && Optional.ofNullable(endDate).isPresent()) {
-
-            this.specification = specification.and(EntitySpecification.withDateRange(startDate, endDate));
         }
 
         return this;

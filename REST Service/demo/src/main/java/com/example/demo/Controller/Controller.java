@@ -4,6 +4,7 @@ import com.example.demo.DummyObject.DummyEntity;
 import com.example.demo.Mapper.DummyEntityMapper;
 import com.example.demo.Services.DummyEntityService;
 import com.example.demo.Specification.SpecificationBuilder;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,30 +37,33 @@ public class Controller {
      * @return The ResponseEntity object which contains saved entity
      */
     @PostMapping(value = "/postEstimation", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DummyEntity> postEntity(@RequestBody DummyEntity entity) {
-
-        System.out.println(entity.getId());
+    public ResponseEntity<DummyEntity> postEntity(@RequestBody @Valid DummyEntity entity) {
 
         Optional<DummyEntity> foundEntity = service.searchEntityById(entity.getId());
+
+        if (entity.getId() == null) {
+
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         if (foundEntity.isPresent()) {
+
             DummyEntity presentEntity = foundEntity.get();
             DummyEntityMapper.mapEntity(entity, presentEntity);
             service.saveEntity(presentEntity);
+            return new ResponseEntity<>(entity, HttpStatus.OK);
 
         } else {
 
             service.saveEntity(entity);
+            return new ResponseEntity<>(entity, HttpStatus.CREATED);
         }
-
-        return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
 
     /**
      * Retrieves estimation data from database based on parameters provided for filtering.
      *
      * @param voivodeship      The voivodeship value (as String)
-     * @param startDate        The start date value in range (in format yyyy-MM-dd)
-     * @param endDate          The end date value in range (in format yyyy-MM-dd)
      * @param population       The population value
      * @param populationInYear The estimated value for population in year
      * @param pageable         The Pageable object for pagination
@@ -67,8 +71,6 @@ public class Controller {
      */
     @GetMapping(value = "/retrieveEstimation", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<DummyEntity>> getEstimation(@RequestParam(value = "voivodeship", required = false) String voivodeship,
-                                                           @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
-                                                           @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
                                                            @RequestParam(value = "population", required = false) Integer population,
                                                            @RequestParam(value = "estimatedPopulation", required = false) Integer populationInYear,
                                                            @PageableDefault(size = Integer.MAX_VALUE) Pageable pageable) {
@@ -76,7 +78,6 @@ public class Controller {
         SpecificationBuilder specificationBuilder = new SpecificationBuilder();
 
         specificationBuilder.withPopulation(population)
-                .withDateRange(startDate, endDate)
                 .withVoivodeship(voivodeship)
                 .withPopulationInYear(populationInYear);
 

@@ -28,8 +28,11 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityfilterChain(HttpSecurity http) throws Exception {
-        http.csrf((csrf) -> csrf.ignoringRequestMatchers(
-                AntPathRequestMatcher.antMatcher("/h2-console/**"))
+        http.csrf((csrf) -> {
+                    csrf.ignoringRequestMatchers(
+                            AntPathRequestMatcher.antMatcher("/h2-console/**"));
+                    csrf.disable();
+                }
         );
         http.headers((headers) -> {
             headers.frameOptions((frameOption) -> frameOption.disable());
@@ -41,6 +44,7 @@ public class SecurityConfig {
                         .anyRequest().hasRole("ADMIN"))
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
+
         return http.build();
     }
 

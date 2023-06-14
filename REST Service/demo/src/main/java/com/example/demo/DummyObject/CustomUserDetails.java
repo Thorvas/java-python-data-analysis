@@ -1,12 +1,13 @@
 package com.example.demo.DummyObject;
 
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Set;
 import java.util.stream.Collectors;
-
+@Data
 public class CustomUserDetails implements UserDetails {
 
     private String username;
@@ -30,76 +31,5 @@ public class CustomUserDetails implements UserDetails {
         this.setAccountNonExpired(user.isAccountNonExpired());
         this.setAccountNonLocked(user.isAccountNonLocked());
         this.setCredentialsNonExpired(user.isCredentialsNonExpired());
-    }
-
-    @Override
-    public Set<GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
-
-    public void setAuthorities(Set<GrantedAuthority> authorities) {
-        this.authorities = authorities;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return isAccountNonLocked;
-    }
-
-    public void setAccountNonLocked(boolean accountNonLocked) {
-        isAccountNonLocked = accountNonLocked;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return isAccountNonExpired;
-    }
-
-    public void setAccountNonExpired(boolean accountNonExpired) {
-        isAccountNonExpired = accountNonExpired;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return isCredentialsNonExpired;
-    }
-
-    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
-        isCredentialsNonExpired = credentialsNonExpired;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return isEnabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
     }
 }
