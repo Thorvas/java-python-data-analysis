@@ -3,24 +3,28 @@ from powiat import Powiat
 import requests
 import json
 import time
+import numpy as np
 
 powiat = [] #list of powiat items
 id = 1 #id needed for powiat class
+r_squared = []
 
 # Because of API's system, I need to reconstruct a name od a powiat and exclude another one
 for i in range(get_total_powiats()):
     if get_powiat_name(i) != 'Powiat m. Wałbrzych do 2002' and get_powiat_name(i) != "Powiat warszawski":
         if get_powiat_name(i) != 'Powiat m. Wałbrzych od 2013':
-            item = Powiat(id, get_powiat_name(i), get_powiat_voivodeship(i), get_powiat_population(i), 0, get_current_date())
+            item = Powiat(id, get_powiat_name(i), get_powiat_voivodeship(i), get_powiat_population(i), get_powiat_growth(i), 0, get_current_date())
             id += 1
         else:
-            item = Powiat(id, 'Powiat m. Wałbrzych', get_powiat_voivodeship(i), get_powiat_population(i), 0, get_current_date())
+            item = Powiat(id, 'Powiat m. Wałbrzych', get_powiat_voivodeship(i), get_powiat_population(i), get_powiat_growth(i), 0, get_current_date())
             id += 1
         powiat.append(item)
 
 # Predicting population value for next year for each powiat
 for item in powiat:
-    item.prediction = item.predict_population()
+    prediction, r_value = item.predict_population()
+    item.prediction = prediction
+    r_squared.append(r_value)
 
 for i in range(len(powiat)):
     payload = powiat[i].asdict()
@@ -31,4 +35,6 @@ for i in range(len(powiat)):
 
 # Testing the results:
 # for i in range(len(powiat)):
-#     print(f'Name: {powiat[i].name}, {powiat[i].population["2022"]}->{powiat[i].prediction}')
+#     print(f'Name: {powiat[i].name}, {powiat[i].population["2022"]}->{powiat[i].prediction}, R: {r_squared[i]}')
+
+# print(np.mean(r_squared))
