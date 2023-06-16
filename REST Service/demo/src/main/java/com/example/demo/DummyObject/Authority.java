@@ -5,16 +5,16 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "authority")
+@Table(name = "AUTHORITIES")
 public class Authority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String authority;
 
     @ManyToOne
-    @JoinColumn(name = "custom_user_id")
+    @JoinColumn(name = "custom_user_id", nullable = false)
     private CustomUser user;
 }

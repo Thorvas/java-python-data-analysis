@@ -1,10 +1,11 @@
 package com.example.demo.Security;
 
+import com.example.demo.AuthenticationFilter.CustomAuthenticationFilter;
 import com.example.demo.Services.UserDetailsCustomImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -12,18 +13,30 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     @Autowired
     private UserDetailsCustomImpl userDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10 );
+        return new BCryptPasswordEncoder(10);
+    }
+
+    @Bean
+    public FilterRegistrationBean<CustomAuthenticationFilter> myFilter(CustomAuthenticationFilter filter){
+        FilterRegistrationBean<CustomAuthenticationFilter> registrationBean
+                = new FilterRegistrationBean<>();
+
+        registrationBean.setFilter(filter);
+        registrationBean.addUrlPatterns("/api/postEstimation/*");
+        registrationBean.setOrder(2);
+
+        return registrationBean;
     }
 
     @Bean
@@ -38,12 +51,9 @@ public class SecurityConfig {
             headers.frameOptions((frameOption) -> frameOption.disable());
         });
         http
-
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
-                        .anyRequest().hasRole("ADMIN"))
-                .formLogin(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults());
+                        .anyRequest().permitAll());
 
         return http.build();
     }

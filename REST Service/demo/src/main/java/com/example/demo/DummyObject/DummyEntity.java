@@ -24,6 +24,7 @@ import java.util.Map;
 @Table(name = "DUMMY_ENTITY")
 public class DummyEntity {
 
+
     public DummyEntity(String json) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         DummyEntity dummyEntity = objectMapper.readValue(json, DummyEntity.class);
@@ -32,7 +33,7 @@ public class DummyEntity {
         this.population = dummyEntity.population;
         this.prediction = dummyEntity.prediction;
         this.lastUpdated = dummyEntity.lastUpdated;
-        this.voivodeship = dummyEntity.getVoivodeship();
+        this.voivodeship = dummyEntity.voivodeship;
     }
 
     @Id
@@ -40,11 +41,11 @@ public class DummyEntity {
     private Long id;
 
     @NotBlank
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @NotBlank
-    @Column(name = "voivodeship")
+    @Column(name = "voivodeship", nullable = false)
     private String voivodeship;
 
     @ElementCollection
@@ -52,11 +53,11 @@ public class DummyEntity {
 
     @NotBlank
     @Min(value = 0)
-    @Column(name = "prediction")
+    @Column(name = "prediction", nullable = false)
     private int prediction;
 
 
-    @Column(name = "last_updated")
+    @Column(name = "last_updated", nullable = false)
     @Temporal(TemporalType.DATE)
     @JsonFormat(pattern = "yyyy-MM-dd")
     @JsonProperty("last_updated")
