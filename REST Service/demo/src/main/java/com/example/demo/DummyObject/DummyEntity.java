@@ -36,6 +36,19 @@ public class DummyEntity {
         this.voivodeship = dummyEntity.voivodeship;
     }
 
+    public DummyEntity copy() {
+        DummyEntity newEntity = new DummyEntity();
+
+        newEntity.setId(this.getId());
+        newEntity.setPopulation(this.getPopulation());
+        newEntity.setVoivodeship(this.getVoivodeship());
+        newEntity.setLastUpdated(this.getLastUpdated());
+        newEntity.setName(this.getName());
+        newEntity.setPrediction(this.getPrediction());
+
+        return newEntity;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

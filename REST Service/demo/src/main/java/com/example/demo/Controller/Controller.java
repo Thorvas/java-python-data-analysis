@@ -9,13 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -39,7 +37,7 @@ public class Controller {
     @PostMapping(value = "/postEstimation", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DummyEntity> postEntity(@RequestBody @Valid DummyEntity entity) {
 
-        Optional<DummyEntity> foundEntity = service.searchEntityById(entity.getId());
+        Optional<DummyEntity> foundEntity = service.findEntityForSaveOrUpdate(entity.getId());
 
         if (entity.getId() == null) {
 
@@ -53,11 +51,10 @@ public class Controller {
             service.saveEntity(presentEntity);
             return new ResponseEntity<>(entity, HttpStatus.OK);
 
-        } else {
-
-            service.saveEntity(entity);
-            return new ResponseEntity<>(entity, HttpStatus.CREATED);
         }
+
+        service.saveEntity(entity);
+        return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
 
     /**
@@ -90,7 +87,7 @@ public class Controller {
      * Updates an entity in database
      *
      * @param id     An ID value of updated object
-     * @param entity New object to substitute an updated objec
+     * @param entity New object to substitute an updated object
      * @return The ResponseEntity object containing updated object
      */
     @PatchMapping(value = "/entities/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -98,10 +95,15 @@ public class Controller {
 
         DummyEntity editedEntity = service.findEntityById(id);
 
-        DummyEntityMapper.mapEntity(entity, editedEntity);
-        service.saveEntity(editedEntity);
+        if (editedEntity != null) {
 
-        return new ResponseEntity<>(editedEntity, HttpStatus.OK);
+            DummyEntityMapper.mapEntity(entity, editedEntity);
+            service.saveEntity(editedEntity);
+            return new ResponseEntity<>(editedEntity, HttpStatus.OK);
+        } else {
+
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
@@ -111,10 +113,10 @@ public class Controller {
      * @return The String with deletion message
      */
     @DeleteMapping(value = "/entities/{id}")
-    public String deleteEntity(@PathVariable Long id) {
+    public ResponseEntity<String> deleteEntity(@PathVariable Long id) {
 
         service.deleteEntity(id);
 
-        return "Entity has been deleted.";
+        return new ResponseEntity<>("An entity has been deleted.", HttpStatus.OK);
     }
 }

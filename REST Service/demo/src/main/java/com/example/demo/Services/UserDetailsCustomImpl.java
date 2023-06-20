@@ -16,7 +16,6 @@ public class UserDetailsCustomImpl implements UserDetailsService {
     private CustomUserRepository userRepository;
 
     @Transactional
-
     public UserDetails loadUserByUsername(String username) {
         CustomUser foundUser = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found."));
         return new CustomUserDetails(foundUser);
