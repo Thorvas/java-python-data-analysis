@@ -28,21 +28,11 @@ public class SpecificationBuilder {
         return this;
     }
 
-    public SpecificationBuilder withPopulation(Integer population) {
+    public SpecificationBuilder withName(String name) {
 
-        if (Optional.ofNullable(population).isPresent()) {
+        if (Optional.ofNullable(name).isPresent()) {
 
-            this.specification = specification.and(EntitySpecification.withPopulation(population));
-        }
-
-        return this;
-    }
-
-    public SpecificationBuilder withPopulationInYear(Integer populationInYear) {
-
-        if (Optional.ofNullable(populationInYear).isPresent()) {
-
-            this.specification = specification.and(EntitySpecification.withPopulationInYear(populationInYear));
+            this.specification = specification.and(EntitySpecification.withName(name));
         }
 
         return this;

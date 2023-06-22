@@ -65,10 +65,10 @@ public class DummyEntityService {
      *
      * @param entity An object saved in database
      */
-    public void saveEntity(DummyEntity entity) {
+    public DummyEntity saveEntity(DummyEntity entity) {
 
         if (entity != null) {
-            repository.save(entity);
+            return repository.save(entity);
         } else {
             throw new EntityNotFoundException("An entity couldn't be saved, because it was null.");
         }

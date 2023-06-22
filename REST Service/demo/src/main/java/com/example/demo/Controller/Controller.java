@@ -61,22 +61,19 @@ public class Controller {
      * Retrieves estimation data from database based on parameters provided for filtering.
      *
      * @param voivodeship      The voivodeship value (as String)
-     * @param population       The population value
-     * @param populationInYear The estimated value for population in year
+     * @param poviat           The poviat value (as String)
      * @param pageable         The Pageable object for pagination
      * @return The ResponseEntity containing result of search
      */
     @GetMapping(value = "/retrieveEstimation", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<DummyEntity>> getEstimation(@RequestParam(value = "voivodeship", required = false) String voivodeship,
-                                                           @RequestParam(value = "population", required = false) Integer population,
-                                                           @RequestParam(value = "estimatedPopulation", required = false) Integer populationInYear,
+                                                           @RequestParam(value = "poviat", required = false) String poviat,
                                                            @PageableDefault(size = Integer.MAX_VALUE) Pageable pageable) {
 
         SpecificationBuilder specificationBuilder = new SpecificationBuilder();
 
-        specificationBuilder.withPopulation(population)
-                .withVoivodeship(voivodeship)
-                .withPopulationInYear(populationInYear);
+        specificationBuilder.withName(poviat)
+                .withVoivodeship(voivodeship);
 
         Page<DummyEntity> entities = service.searchEntities(specificationBuilder.buildSpecification(), pageable);
 
@@ -98,8 +95,8 @@ public class Controller {
         if (editedEntity != null) {
 
             DummyEntityMapper.mapEntity(entity, editedEntity);
-            service.saveEntity(editedEntity);
-            return new ResponseEntity<>(editedEntity, HttpStatus.OK);
+            DummyEntity savedEntity = service.saveEntity(editedEntity);
+            return new ResponseEntity<>(savedEntity, HttpStatus.OK);
         } else {
 
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

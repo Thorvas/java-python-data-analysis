@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.IOException;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Map;
 
 /**
@@ -74,5 +74,5 @@ public class DummyEntity {
     @Temporal(TemporalType.DATE)
     @JsonFormat(pattern = "yyyy-MM-dd")
     @JsonProperty("last_updated")
-    private Date lastUpdated;
+    private LocalDate lastUpdated;
 }
