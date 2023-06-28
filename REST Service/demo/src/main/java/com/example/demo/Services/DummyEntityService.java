@@ -26,13 +26,9 @@ public class DummyEntityService {
      *
      * @param id An ID value of deleted entity
      */
-    public void deleteEntity(Long id) {
+    public void deleteEntity(DummyEntity entity) {
 
-        if (id != null) {
-            repository.deleteById(id);
-        } else {
-            throw new IllegalArgumentException("An ID argument must not be null.");
-        }
+        repository.deleteById(entity.getId());
     }
 
     /**
@@ -41,11 +37,11 @@ public class DummyEntityService {
      * @param id An ID value of found entity
      * @return Found DummyEntity object or new DummyEntity object if it was not found
      */
-    public DummyEntity findEntityById(Long id) {
+    public Optional<DummyEntity> findEntityById(Long id) {
 
         Optional<DummyEntity> entity = repository.findById(id);
 
-        return entity.orElseThrow(() -> new EntityNotFoundException("An entity couldn't be found."));
+        return entity;
     }
 
     /**

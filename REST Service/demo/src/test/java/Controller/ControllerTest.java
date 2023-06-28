@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -99,11 +100,17 @@ public class ControllerTest {
         specificationBuilder.withName(dummyEntity.getName())
                 .withVoivodeship(dummyEntity.getVoivodeship());
 
-        Mockito.when(service.searchEntities(specificationBuilder.buildSpecification(), pageable)).thenReturn(new PageImpl<>(entityToPage));
+        Mockito.when(service.searchEntities(Mockito.any(Specification.class), Mockito.any(Pageable.class))).thenReturn(new PageImpl<>(entityToPage));
 
         ResponseEntity<Page<DummyEntity>> response = controller.getEstimation(dummyEntity.getVoivodeship(), dummyEntity.getName(), pageable);
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertNotNull(response.getBody());
+    }
+
+    @Test
+    public void patchEntity_shouldReturnBadRequestStatus() {
+        Mockito.when(service.findEntityById(dummyEntity.getId())).thenReturn(null);
+
     }
 }

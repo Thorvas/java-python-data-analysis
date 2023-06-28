@@ -4,6 +4,7 @@ import com.example.demo.DummyObject.DummyEntity;
 import com.example.demo.Mapper.DummyEntityMapper;
 import com.example.demo.Services.DummyEntityService;
 import com.example.demo.Specification.SpecificationBuilder;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,35 +38,39 @@ public class Controller {
     @PostMapping(value = "/postEstimation", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DummyEntity> postEntity(@RequestBody @Valid DummyEntity entity) {
 
-        Optional<DummyEntity> foundEntity = service.findEntityForSaveOrUpdate(entity.getId());
+        if (entity.getId() != null) {
 
-        if (entity.getId() == null) {
+            Optional<DummyEntity> foundEntity = service.findEntityForSaveOrUpdate(entity.getId());
 
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            if (foundEntity.isPresent()) {
+
+                DummyEntity presentEntity = foundEntity.get();
+                DummyEntityMapper.mapEntity(entity, presentEntity);
+                service.saveEntity(presentEntity);
+                return new ResponseEntity<>(entity, HttpStatus.OK);
+
+            }
+
+            service.saveEntity(entity);
+            return new ResponseEntity<>(entity, HttpStatus.CREATED);
+
         }
 
-        if (foundEntity.isPresent()) {
+        else {
 
-            DummyEntity presentEntity = foundEntity.get();
-            DummyEntityMapper.mapEntity(entity, presentEntity);
-            service.saveEntity(presentEntity);
-            return new ResponseEntity<>(entity, HttpStatus.OK);
-
+            throw new IllegalArgumentException("An ID shouldn't be null.");
         }
-
-        service.saveEntity(entity);
-        return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
 
     /**
      * Retrieves estimation data from database based on parameters provided for filtering.
      *
-     * @param voivodeship      The voivodeship value (as String)
-     * @param poviat           The poviat value (as String)
-     * @param pageable         The Pageable object for pagination
+     * @param voivodeship The voivodeship value (as String)
+     * @param poviat      The poviat value (as String)
+     * @param pageable    The Pageable object for pagination
      * @return The ResponseEntity containing result of search
      */
-    @GetMapping(value = "/retrieveEstimation", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/estimation", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<DummyEntity>> getEstimation(@RequestParam(value = "voivodeship", required = false) String voivodeship,
                                                            @RequestParam(value = "poviat", required = false) String poviat,
                                                            @PageableDefault(size = Integer.MAX_VALUE) Pageable pageable) {
@@ -90,16 +95,17 @@ public class Controller {
     @PatchMapping(value = "/entities/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DummyEntity> updateEntity(@PathVariable Long id, @RequestBody DummyEntity entity) {
 
-        DummyEntity editedEntity = service.findEntityById(id);
+        Optional<DummyEntity> editedEntity = service.findEntityById(id);
 
-        if (editedEntity != null) {
+        if (editedEntity.isPresent()) {
 
-            DummyEntityMapper.mapEntity(entity, editedEntity);
-            DummyEntity savedEntity = service.saveEntity(editedEntity);
+            DummyEntityMapper.mapEntity(entity, editedEntity.get());
+            DummyEntity savedEntity = service.saveEntity(editedEntity.get());
             return new ResponseEntity<>(savedEntity, HttpStatus.OK);
+
         } else {
 
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new EntityNotFoundException("Requested entity was not found.");
         }
     }
 
@@ -112,8 +118,13 @@ public class Controller {
     @DeleteMapping(value = "/entities/{id}")
     public ResponseEntity<String> deleteEntity(@PathVariable Long id) {
 
-        service.deleteEntity(id);
+        if (id != null) {
+            Optional<DummyEntity> entityToDelete = service.findEntityById(id);
+            service.deleteEntity(entityToDelete.orElseThrow(() -> new EntityNotFoundException("An entity to delete was not found.")));
+            return new ResponseEntity<>("An entity has been deleted.", HttpStatus.OK);
+        }
+        throw new IllegalArgumentException("An ID shouldn't be null.");
 
-        return new ResponseEntity<>("An entity has been deleted.", HttpStatus.OK);
+
     }
 }
